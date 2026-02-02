@@ -11,7 +11,7 @@ I started by creating a basic Python web application using Flask and running it 
 - File: `app.py` (using `from flask import Flask`)
 - Port: 5000
 
-![Flask app running locally in the browser](/screenshots/Python-web-app.png) 
+![Flask app running locally in the browser](hello_flask/screenshots/Python-web-app.png) 
 Flask app running locally in the browser
 
 ![Flask import in app.py](screenshots/importflask.png)
