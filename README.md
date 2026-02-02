@@ -6,78 +6,55 @@ Through this module, I progressed from running a simple web application locally 
 
 ## 1. Local Flask Application
 
-I started by creating a basic Python web application using Flask and running it directly on my local machine on port 5000. This helped me understand the application behaviour before introducing Docker.
+I started by creating a basic Python web application using Flask and running it directly on my local machine. This helped me understand the application behaviour before introducing Docker.
 
 - File: `app.py` (using `from flask import Flask`)
-- Port: 5000
+
+![Flask import in app.py](hello_flask/screenshots/importflask.png)
 
 ![Flask app running locally in the browser](hello_flask/screenshots/Python-web-app.png) 
 Flask app running locally in the browser
 
-![Flask import in app.py](screenshots/importflask.png)
 
----
+## 2. Containerising the Flask Application
 
-## 2. Containerising the Application
+After confirming the Flask application worked locally, I containerised it using Docker.
 
-Next, I learned that a Dockerfile acts as a recipe for building a Docker image.
-
-I created a Dockerfile for the Flask app and built my first Docker image using:
-
+I created a Dockerfile, which acts as a recipe for building a Docker image. From the same directory as the Dockerfile, I built the image and tagged it:
 ```bash
-docker build -t hello-flask .
+docker build -t hello-flask . 
+```
+ then ran the image as a container, mapping port 5000 on my local machine to port 5000 inside the container and running it in detached mode:
+```bash
 docker run -d -p 5000:5000 hello-flask
 ```
+![Dockerfile for Hello Flask](hello_flask/screenshots/dockerfile1.png)
 
-I then ran the container in detached mode and mapped the container port to my local machine: docker run -d -p 5000:5000 hello-flask 
-Key takeaways:
-	•	-d runs the container in detached mode (background)
-	•	-p maps the container port to the host port
-	•	The Flask application now runs fully inside a Docker container
+## 3. linking containers 
 
-Screenshot:
-	•	Dockerfile1.png – Dockerfile for the simple Flask web application
+I connected my python web app to a MySQL database running in another Docker container. I updated the Flask app so it can talk to the MySQL container using the container name. The app runs a simple query to get the MySQL version and shows it on the web page with the Hello World message. This shows how two Docker containers can communicate with each other.
 
-    dockercompose1.png – Docker Compose file linking Flask and MySQL
+![mysql](hello_flask/screenshots/mysqldb.png)
 
-    ## 🔗 PART 3 — DOCKER COMPOSE + AWS ECR
+## 4. Docker compose 
+I created my first docker-compose.yml file to run my Flask app and MySQL database at the same time. This file defines both services in one place, so I do not need to start each container manually.
 
-```md
----
+The web service is built from the Dockerfile in the current directory and runs on port 5000. It depends on the database service, which means Docker Compose starts the MySQL container first. 
 
-## 3. Multi-Container Application with Docker Compose
+![Docker Compose linking Flask and MySQL](hello_flask/screenshots/dockercompose1.png)
 
-To manage applications with multiple services, I used Docker Compose. This allowed me to define and run multiple containers together using a single configuration file.
+## 5. Pushing and Using Docker Images with AWS ECR
 
-In this setup, I linked:
-- A Flask web application
-- A MySQL database
-- A custom Docker network to allow container communication
+I created a private repository in AWS Elastic Container Registry ECR to store my Docker images. After creating the repository, I authenticated Docker with AWS and pushed my Flask MySQL Docker image to ECR. This allowed me to store the image securely in AWS instead of Docker Hub.
 
-I started the full application stack using:
+![AWS ECR image](hello_flask/screenshots/ecr2.png)
 
-```bash
-docker compose up -d ```
+## 6. Optimising Docker Images with Multi Stage Builds
 
-## 🚀 PART 4 — MULTI-STAGE BUILDS + TAKEAWAYS
+I optimised my Flask MySQL Docker image by using a multi stage build. The original image was very large because it included build tools and dependencies that were only needed during the build process. This made the image slow to build and unnecessary heavy.
 
+I updated the Dockerfile to use multiple stages. The first stage is used to build the application and install all required dependencies. The final stage only includes the files and dependencies needed to run the application. This removes unnecessary tools from the final image.
 
+Using a multi stage build significantly reduced the image size, making it faster to build, pull, and deploy. This is an important optimisation technique used in real world DevOps environments.
 
-## 5. Optimising Image Size with Multi-Stage Builds
-
-I implemented a multi-stage Docker build to reduce the final image size. This approach separates the build environment from the runtime environment, resulting in a smaller and more efficient production image.
-
-Screenshot:
-- multistage.png – Multi-stage Docker build configuration
-
----
-
-## Key Takeaways
-
-1. Containers package applications and their dependencies, ensuring consistency across environments.
-2. Dockerfiles define how images are built and how containers run.
-3. Docker Compose simplifies managing multi-container applications.
-4. AWS ECR enables storing and deploying container images in the cloud.
-5. Multi-stage builds are a best practice for creating lean, production-ready images.
-
-This hands-on journey from a local Flask app to containerised, multi-service applications gave me a solid foundation in core Docker workflows used in DevOps.
+![Multi-stage Docker build](hello_flask/screenshots/multistage.png)
