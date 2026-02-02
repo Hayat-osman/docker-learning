@@ -11,9 +11,8 @@ I started by creating a basic Python web application using Flask and running it 
 - File: `app.py` (using `from flask import Flask`)
 - Port: 5000
 
-**Screenshots:**
-- `python-web-app.png` – Flask application running locally in the browser
-- `importflask.png` – `app.py` showing the Flask import
+![Flask app running locally in the browser](screenshots/python-web-app.png) 
+![Flask import in app.py](screenshots/importflask.png)
 
 ---
 
@@ -25,6 +24,8 @@ I created a Dockerfile for the Flask app and built my first Docker image using:
 
 ```bash
 docker build -t hello-flask .
+docker run -d -p 5000:5000 hello-flask
+```
 
 I then ran the container in detached mode and mapped the container port to my local machine: docker run -d -p 5000:5000 hello-flask 
 Key takeaways:
