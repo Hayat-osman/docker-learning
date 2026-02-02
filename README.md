@@ -11,7 +11,7 @@ I started by creating a basic Python web application using Flask and running it 
 - File: `app.py` (using `from flask import Flask`)
 - Port: 5000
 
-![Flask app running locally in the browser](Docker-learning/hello_flask/screenshots/python-web-app.png) 
+![Flask app running locally in the browser](/screenshots/Python-web-app.png) 
 Flask app running locally in the browser
 
 ![Flask import in app.py](screenshots/importflask.png)
@@ -57,12 +57,11 @@ In this setup, I linked:
 I started the full application stack using:
 
 ```bash
-docker compose up -d
+docker compose up -d ```
 
 ## 🚀 PART 4 — MULTI-STAGE BUILDS + TAKEAWAYS
 
-```md
----
+
 
 ## 5. Optimising Image Size with Multi-Stage Builds
 
